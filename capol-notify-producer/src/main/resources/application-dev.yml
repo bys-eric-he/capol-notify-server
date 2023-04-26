@@ -1,0 +1,46 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.1.207.12:3306/db_notify?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
+    username: notify
+    password: notify_qa
+    type: com.alibaba.druid.pool.DruidDataSource
+    ### 连接池配置
+    druid:
+      initial-size: 50
+      max-active: 200
+      min-idle: 50
+      max-wait: 50
+      validation-query: SELECT 1
+  #配置rabbitMq 服务器
+  rabbitmq:
+    host: 10.1.207.30
+    port: 5672
+    username: bimAdmin
+    password: admin_2020_prod
+    #虚拟host 可以不设置,使用server默认host
+    virtual-host: CapolNotifyVHost
+    publisher-returns: true #开启confirm确认模式
+    publisher-confirm-type: correlated
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.baomidou.mybatisplus: DEBUG
+    com.capol.notify.manage.domain.repository: DEBUG
+  file:
+    path: /logs/producer
+
+capol:
+  jwt:
+    issuer: capol
+    key: fa6Y!#2zYfdnzD#Z@USNFlQIgMROqR6aNnPeHy%Yw$9eCtOnjt
+    expires-hours: 8
+  notify:
+    retry:
+      max-count: 19

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.capol.notify.manage.domain.repository.UserQueueMapper">
+    <resultMap id="BaseResultMap" type="com.capol.notify.manage.domain.model.queue.UserQueueDO">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="exchange" column="exchange" jdbcType="VARCHAR"/>
+        <result property="routing" column="routing" jdbcType="VARCHAR"/>
+        <result property="queue" column="queue" jdbcType="VARCHAR"/>
+        <result property="priority" column="priority" jdbcType="INTEGER"/>
+        <result property="businessType" column="business_type" jdbcType="VARCHAR"/>
+        <result property="disabled" column="disabled" jdbcType="BIT"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="createDateTime" column="created_datetime" jdbcType="TIMESTAMP"/>
+        <result property="latestModifiedDateTime" column="latest_modified_datetime" jdbcType="TIMESTAMP"/>
+        <association property="userId" javaType="com.capol.notify.manage.domain.model.user.UserId">
+            <id column="user_id" property="id"/>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        `id`,
+        `user_id`,
+        `exchange`,
+        `routing`,
+        `queue`,
+        `priority`,
+        `business_type`,
+        `disabled`
+    </sql>
+
+    <select id="findByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_user_queue WHERE `status` =1 AND user_id= #{id}
+    </select>
+</mapper>
