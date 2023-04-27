@@ -1,5 +1,7 @@
 package com.capol.notify.sdk.command;
 
+import com.capol.notify.sdk.EnumMessageBusinessType;
+import com.capol.notify.sdk.EnumMessageType;
 import lombok.Data;
 
 /**
@@ -18,4 +20,13 @@ public class DingDingGroupMsgCommand extends BaseMsgCommand {
      * 消息内容
      */
     private String content;
+
+    public DingDingGroupMsgCommand(String chatId, String content, Integer priority, EnumMessageType messageType,
+                                   EnumMessageBusinessType businessType) {
+        this.chatId = chatId;
+        this.content = content;
+        this.setPriority(priority);
+        this.setMessageType(messageType);
+        this.setBusinessType(businessType);
+    }
 }

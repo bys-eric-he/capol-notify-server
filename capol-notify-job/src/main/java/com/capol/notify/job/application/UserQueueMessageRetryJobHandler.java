@@ -15,8 +15,10 @@ import com.capol.notify.sdk.EnumMessageType;
 import com.capol.notify.sdk.command.DingDingGroupMsgCommand;
 import com.capol.notify.sdk.command.DingDingNormalMsgCommand;
 import com.xxl.job.core.biz.model.ReturnT;
+import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -69,10 +71,21 @@ public class UserQueueMessageRetryJobHandler {
     @XxlJob(value = "userQueueMessageRetryJobHandler", init = "retryInit", destroy = "retryDestroy")
     public ReturnT<String> checkRetryMessageJob() throws Exception {
         try {
+            //获取任务配置中的(任务参数*)参数
+            String param = XxlJobHelper.getJobParam();
+            if (StringUtils.isEmpty(param)) {
+                log.error("-->userQueueMessageRetryJobHandler 任务参数配置缺失, 配置参数格式, 例如：{} 第一个参数单位为(天),第二个参数单位为(分钟)", param, "5,20");
+                return ReturnT.FAIL;
+            }
+            String[] params = param.split(",");
+            if (params.length != 2) {
+                log.error("-->userQueueMessageRetryJobHandler 任务参数配置不合法, 当前配置参数：{}, 正确配置参数格式, 例如：{} 第一个参数单位为(天),第二个参数单位为(分钟)", param, "5,20");
+                return ReturnT.FAIL;
+            }
             //开始时间为3天之前的
-            LocalDateTime startDateTime = LocalDateTime.now().minusDays(3);
+            LocalDateTime startDateTime = LocalDateTime.now().minusDays(Long.valueOf(params[0]));
             //结束时间为当前时间前30分钟的
-            LocalDateTime endDateTime = LocalDateTime.now().minusMinutes(30);
+            LocalDateTime endDateTime = LocalDateTime.now().minusMinutes(Long.valueOf(params[1]));
 
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String startTime = dateTimeFormatter.format(startDateTime);
