@@ -142,6 +142,25 @@ public class UserQueueMessageRetryJobHandler {
                             break;
                         }
                         case DING_GROUP_MESSAGE: {
+                            dingDingGroupMsgCommand = JSON.parseObject(messageDO.getContent(), new TypeReference<DingDingGroupMsgCommand>() {
+                            });
+                            //处理失败
+                            if (EnumProcessStatusType.FAILURE.getCode().equals(messageDO.getProcessStatus())) {
+                                log.info("-->定时任务重发<处理失败的消息>, 消息业务类型:{} 消息ID:{} 消息所属业务系统:{} 消息发送队列:{}",
+                                        messageDO.getBusinessType(),
+                                        messageDO.getId(),
+                                        messageDO.getServiceId(),
+                                        userQueueDTO.getQueue());
+                            }
+                            if (EnumProcessStatusType.WAIT_TODO.getCode().equals(messageDO.getProcessStatus())) {
+                                log.info("-->定时任务重发<等待处理的消息>, 消息业务类型:{} 消息ID:{} 消息所属业务系统:{} 消息发送队列:{}",
+                                        messageDO.getBusinessType(),
+                                        messageDO.getId(),
+                                        messageDO.getServiceId(),
+                                        userQueueDTO.getQueue());
+                            }
+                            //重发的消息优先级默认为10
+                            messagePublisher.messageSender(dingDingGroupMsgCommand, userQueueDTO.getQueue(), 10, String.valueOf(messageDO.getId()));
                             break;
                         }
                         case EMAIL_MESSAGE: {

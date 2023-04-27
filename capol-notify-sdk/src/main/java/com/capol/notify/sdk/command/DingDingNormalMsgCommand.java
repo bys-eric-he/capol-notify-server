@@ -1,6 +1,7 @@
 package com.capol.notify.sdk.command;
 
 import com.capol.notify.sdk.EnumMessageBusinessType;
+import com.capol.notify.sdk.EnumMessageContentType;
 import com.capol.notify.sdk.EnumMessageType;
 import lombok.Data;
 
@@ -31,18 +32,19 @@ public class DingDingNormalMsgCommand extends BaseMsgCommand {
     }
 
     public DingDingNormalMsgCommand(List<String> userIds, Long agentId, String content, Integer priority, EnumMessageType messageType,
-                                    EnumMessageBusinessType businessType) {
+                                    EnumMessageContentType contentType, EnumMessageBusinessType businessType) {
         this.userIds = userIds;
         this.agentId = agentId;
         this.content = content;
         this.setPriority(priority);
         this.setMessageType(messageType);
+        this.setContentType(contentType);
         this.setBusinessType(businessType);
     }
 
     public DingDingNormalMsgCommand(List<String> userIds, Long agentId, String content, Long messageId,
                                     Long userId, Integer priority, EnumMessageType messageType,
-                                    EnumMessageBusinessType businessType) {
+                                    EnumMessageContentType contentType, EnumMessageBusinessType businessType) {
         this.userIds = userIds;
         this.agentId = agentId;
         this.content = content;
@@ -50,6 +52,7 @@ public class DingDingNormalMsgCommand extends BaseMsgCommand {
         this.setUserId(userId);
         this.setPriority(priority);
         this.setMessageType(messageType);
+        this.setContentType(contentType);
         this.setBusinessType(businessType);
     }
 }

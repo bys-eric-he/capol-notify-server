@@ -1,6 +1,7 @@
 package com.capol.notify.producer.port.adapter.restapi.controller.message.parameter;
 
 import com.capol.notify.sdk.EnumMessageBusinessType;
+import com.capol.notify.sdk.EnumMessageContentType;
 import com.capol.notify.sdk.EnumMessageType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@ApiModel("普通消息传输对象")
+@ApiModel("消息传输对象")
 @Data
 @NoArgsConstructor
 public class MessageRequestParam {
@@ -25,6 +26,10 @@ public class MessageRequestParam {
     @ApiModelProperty("消息业务类型")
     @NotNull(message = "消息业务类型不允许为空!")
     private EnumMessageBusinessType businessType;
+
+    @ApiModelProperty("消息内容类型((text,image,file,link,markdown,oa,action_card))")
+    @NotNull(message = "消息内容类型不允许为空!")
+    private EnumMessageContentType contentType;
 
     /**
      * 普通消息用户ID

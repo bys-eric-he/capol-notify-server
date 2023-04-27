@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.capol.notify.manage.domain.EnumProcessStatusType;
 import com.capol.notify.manage.domain.model.message.UserQueueMessageDO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -38,9 +39,8 @@ public class AsyncMessageService {
         UserQueueMessageDO queueMessageDO = messageService.getMessageById(messageId);
         if (queueMessageDO != null) {
             queueMessageDO.buildBaseInfo();
-            queueMessageDO.setProcessStatus(statusType.getCode());
             queueMessageDO.setConsumerStartTime(DateUtil.dateSecond());
-
+            String oldSendResponse = queueMessageDO.getSendResponse();
             if (EnumProcessStatusType.FAILURE == statusType) {
                 String sendResponse = null;
                 if (isReachedRetryMaxCount(queueMessageDO)) {
@@ -53,12 +53,17 @@ public class AsyncMessageService {
                     }
                     queueMessageDO.setRetryCountIncrease();
                 }
-                queueMessageDO.setSendResponse(sendResponse);
+                queueMessageDO.setSendResponse(ObjectUtils.isNotEmpty(oldSendResponse) ? oldSendResponse.concat("->").concat(sendResponse) : sendResponse);
             } else if (EnumProcessStatusType.SUCCESS == statusType) {
                 String sendResponse = "消费成功, 处理时间=" + DateUtil.dateSecond();
-                queueMessageDO.setSendResponse(sendResponse);
+                queueMessageDO.setSendResponse(ObjectUtils.isNotEmpty(oldSendResponse) ? oldSendResponse.concat("->").concat(sendResponse) : sendResponse);
+                //消费成功后, 需要判断该消息是否是处于失败状态,重新发送处理的消息,如果是则消费成功后,除了要将状态置为成功之外,还要将消息重试次数+1
+                if (EnumProcessStatusType.FAILURE.getCode().equals(queueMessageDO.getProcessStatus())) {
+                    queueMessageDO.setRetryCountIncrease();
+                }
             }
             queueMessageDO.setConsumerEndTime(DateUtil.dateSecond());
+            queueMessageDO.setProcessStatus(statusType.getCode());
             messageService.saveOrUpdateMessage(queueMessageDO);
             log.info("-->消息：{} 持久化更新处理成功！", messageId);
         } else {

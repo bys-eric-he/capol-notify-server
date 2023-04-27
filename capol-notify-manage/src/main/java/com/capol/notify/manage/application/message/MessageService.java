@@ -9,6 +9,7 @@ import com.capol.notify.manage.domain.model.message.UserQueueMessageDO;
 import com.capol.notify.manage.domain.repository.UserQueueMessageMapper;
 import com.capol.notify.sdk.EnumMessageType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -80,11 +81,11 @@ public class MessageService {
         IPage<UserQueueMessageDO> userQueueMessageDOIPage = userQueueMessageMapper.selectPage(page, queryWrapper);
 
         List<UserQueueMessageDO> userQueueMessageDOS = userQueueMessageDOIPage.getRecords();
-        Long total = userQueueMessageDOIPage.getTotal();
+        int total = CollectionUtils.isEmpty(userQueueMessageDOIPage.getRecords()) ? 0 : userQueueMessageDOIPage.getRecords().size();
 
         log.info("-->获取到符合条件的消息记录条数：{} 条!", total);
 
-        return new PageResult<>(userQueueMessageDOS, total);
+        return new PageResult<>(userQueueMessageDOS, Long.valueOf(total));
     }
 
     /**

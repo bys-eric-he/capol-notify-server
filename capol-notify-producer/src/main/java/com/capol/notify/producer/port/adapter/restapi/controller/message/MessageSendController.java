@@ -51,6 +51,7 @@ public class MessageSendController {
                         request.getContent(),
                         request.getPriority(),
                         request.getMessageType(),
+                        request.getContentType(),
                         request.getBusinessType()));
                 break;
             }
@@ -63,6 +64,7 @@ public class MessageSendController {
                         request.getContent(),
                         request.getPriority(),
                         request.getMessageType(),
+                        request.getContentType(),
                         request.getBusinessType()));
                 break;
             }
