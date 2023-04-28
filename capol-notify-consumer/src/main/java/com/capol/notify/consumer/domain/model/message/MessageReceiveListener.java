@@ -1,7 +1,5 @@
 package com.capol.notify.consumer.domain.model.message;
 
-import com.capol.notify.manage.application.ApplicationException;
-import com.capol.notify.manage.domain.EnumExceptionCode;
 import com.capol.notify.manage.domain.model.IdGenerator;
 import com.capol.notify.manage.domain.model.message.MQMessageEdit;
 import com.capol.notify.sdk.MessageReceiveConfirmCallback;

@@ -51,7 +51,11 @@ public class AsyncMessageService {
                     } else {
                         sendResponse = "消费失败, 失败次数: " + Integer.valueOf(queueMessageDO.getRetryCount() + 1) + ", 本次没有抛出任何异常详情! 最后一次处理时间: " + DateUtil.dateSecond();
                     }
-                    queueMessageDO.setRetryCountIncrease();
+                    // 消费成功后, 需要判断该消息是否是处于失败状态,重新发送处理的消息,如果是将消息重试次数+1
+                    // 如果不是, 则说明是待处理的状态,说明是第一次消费失败,这时不需要对重试次数+1
+                    if (EnumProcessStatusType.FAILURE.getCode().equals(queueMessageDO.getProcessStatus())) {
+                        queueMessageDO.setRetryCountIncrease();
+                    }
                 }
                 queueMessageDO.setSendResponse(ObjectUtils.isNotEmpty(oldSendResponse) ? oldSendResponse.concat("->").concat(sendResponse) : sendResponse);
             } else if (EnumProcessStatusType.SUCCESS == statusType) {
