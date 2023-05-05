@@ -6,3 +6,6 @@ spring:
     name: capol-notify-job
   profiles:
     active: dev
+
+logging:
+  config: classpath:capol-logback-spring.xml

@@ -9,3 +9,6 @@ spring:
     name: capol-notify-provider
   profiles:
     active: dev
+
+logging:
+  config: classpath:capol-logback-spring.xml
