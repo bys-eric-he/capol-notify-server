@@ -17,4 +17,12 @@ public interface TokenService {
      * @return 解析后的用户描述
      */
     UserDescriptor decodeToken(String token);
+
+    /**
+     * 刷新Token
+     *
+     * @param oldToken
+     * @return
+     */
+    String refreshToken(String oldToken);
 }

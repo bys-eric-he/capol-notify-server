@@ -63,6 +63,16 @@ public class UserService {
     }
 
     /**
+     * 刷新Token
+     *
+     * @param oldToken
+     * @return
+     */
+    public String refreshToken(String oldToken) {
+        return tokenService.refreshToken(oldToken);
+    }
+
+    /**
      * 获取业务系统身份及队列信息
      *
      * @param anUserId 用户ID
